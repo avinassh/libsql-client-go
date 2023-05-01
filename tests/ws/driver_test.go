@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	_ "github.com/libsql/libsql-client-go/libsql"
-	_ "modernc.org/sqlite"
 )
 
 func Test_QueryExec(t *testing.T) {
