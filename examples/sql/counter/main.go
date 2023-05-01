@@ -87,7 +87,7 @@ func runCounterExample(dbPath string) {
 		fmt.Fprintf(os.Stderr, "failed to prepare statement %s: %s", incCounterStatementPositionalArgs, err)
 		os.Exit(1)
 	}
-	_, err = stmt.Exec("PL", "WAW")
+	_, err = stmt.Exec("FI", "HEL")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to execute statement %s: %s", incCounterStatementPositionalArgs, err)
 		os.Exit(1)
