@@ -265,11 +265,6 @@ var dbUrl = ""
 var dbFile = "file:test.db"
 
 func main() {
-	dbId := "della-avinassh.turso.io"
-	jwt := "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODI1ODcwNTksImlkIjoiZThlM2E5MGUtYWY2Mi0xMWVkLTkwOWItYzI4MjgxZmVkNGFmIn0.4NX0T4CAQW8TNK8I3fBDeGQXlC_vrGrilscCRZMtigXBSKOpTMmBi9bgR2gBrCzgrHYmfC32wPE_JKQYqxmsCg"
-	dbUrl = fmt.Sprintf("wss://%s?jwt=%s", dbId, jwt)
-	fmt.Println(dbUrl)
-	return
 	runCounterExample(dbUrl)
 	runCounterExample(dbFile)
 	runConcurrentExample(dbUrl)
