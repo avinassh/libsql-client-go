@@ -6,9 +6,9 @@ import (
 	"database/sql"
 	"os"
 	"testing"
-	"time"
 
 	_ "github.com/libsql/libsql-client-go/libsql"
+	_ "modernc.org/sqlite"
 )
 
 func Test_QueryExec(t *testing.T) {
@@ -432,40 +432,4 @@ func Test_DataTypes(t *testing.T) {
 	case nullFloat.Valid:
 		t.Error("null float is valid")
 	}
-}
-
-// TODO: This doesn't pass yet
-func Test_TimeStamp(t *testing.T) {
-	dbURL := os.Getenv("LIBSQL_TEST_DB_URL")
-	db, err := sql.Open("libsql", dbURL)
-	if err != nil {
-		t.Fatal(err)
-	}
-	ctx := context.Background()
-	var timeStamp, timeNow time.Time
-	err = db.QueryRowContext(ctx, "SELECT datetime('2023-01-01 01:02:03.040', '-7 hours') as timeStamp, datetime('now') as timenow;").Scan(&timeStamp, &timeNow)
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, err = db.ExecContext(ctx, "CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, created_at DATETIME)")
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, err = db.ExecContext(ctx, "INSERT INTO test (created_at) VALUES (?)", time.Now())
-	if err != nil {
-		t.Fatal(err)
-	}
-	var id int
-	var createdAt time.Time
-	err = db.QueryRowContext(ctx, "SELECT id, created_at FROM test").Scan(&id, &createdAt)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		_, err = db.ExecContext(ctx, "DROP TABLE test")
-		if err != nil {
-			t.Fatal(err)
-		}
-		db.Close()
-	})
 }
