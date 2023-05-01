@@ -86,18 +86,26 @@ func convertToNamed(args []driver.Value) []driver.NamedValue {
 }
 
 func (s stmt) Exec(args []driver.Value) (driver.Result, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultWSTimeout)
-	defer cancel()
-	return s.c.ExecContext(ctx, s.query, convertToNamed(args))
+	return s.c.ExecContext(context.Background(), s.query, convertToNamed(args))
 }
 
 func (s stmt) Query(args []driver.Value) (driver.Rows, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultWSTimeout)
-	defer cancel()
-	return s.c.QueryContext(ctx, s.query, convertToNamed(args))
+	return s.c.QueryContext(context.Background(), s.query, convertToNamed(args))
+}
+
+func (s stmt) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
+	return s.c.ExecContext(ctx, s.query, args)
+}
+
+func (s stmt) QueryContext(ctx context.Context, args []driver.NamedValue) (driver.Rows, error) {
+	return s.c.QueryContext(ctx, s.query, args)
 }
 
 func (c *conn) Prepare(query string) (driver.Stmt, error) {
+	return stmt{c, query}, nil
+}
+
+func (c *conn) PrepareContext(_ context.Context, query string) (driver.Stmt, error) {
 	return stmt{c, query}, nil
 }
 
