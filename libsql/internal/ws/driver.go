@@ -102,7 +102,7 @@ func (s stmt) QueryContext(ctx context.Context, args []driver.NamedValue) (drive
 }
 
 func (c *conn) Prepare(query string) (driver.Stmt, error) {
-	return stmt{c, query}, nil
+	panic("implement me")
 }
 
 func (c *conn) PrepareContext(_ context.Context, query string) (driver.Stmt, error) {
@@ -134,7 +134,7 @@ func (t tx) Rollback() error {
 }
 
 func (c *conn) Begin() (driver.Tx, error) {
-	return c.BeginTx(context.Background(), driver.TxOptions{})
+	panic("implement me")
 }
 
 func (c *conn) BeginTx(ctx context.Context, _ driver.TxOptions) (driver.Tx, error) {
