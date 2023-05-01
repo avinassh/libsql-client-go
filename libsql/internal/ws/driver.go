@@ -86,11 +86,11 @@ func convertToNamed(args []driver.Value) []driver.NamedValue {
 }
 
 func (s stmt) Exec(args []driver.Value) (driver.Result, error) {
-	return s.c.ExecContext(context.Background(), s.query, convertToNamed(args))
+	panic("implement me")
 }
 
 func (s stmt) Query(args []driver.Value) (driver.Rows, error) {
-	return s.c.QueryContext(context.Background(), s.query, convertToNamed(args))
+	panic("implement me")
 }
 
 func (s stmt) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
@@ -118,7 +118,7 @@ type tx struct {
 }
 
 func (t tx) Commit() error {
-	_, err := t.c.ExecContext(context.TODO(), "COMMIT", nil)
+	_, err := t.c.ExecContext(context.Background(), "COMMIT", nil)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func (t tx) Commit() error {
 }
 
 func (t tx) Rollback() error {
-	_, err := t.c.ExecContext(context.TODO(), "ROLLBACK", nil)
+	_, err := t.c.ExecContext(context.Background(), "ROLLBACK", nil)
 	if err != nil {
 		return err
 	}
@@ -134,11 +134,14 @@ func (t tx) Rollback() error {
 }
 
 func (c *conn) Begin() (driver.Tx, error) {
-	_, err := c.ExecContext(context.TODO(), "BEGIN", nil)
+	return c.BeginTx(context.Background(), driver.TxOptions{})
+}
+
+func (c *conn) BeginTx(ctx context.Context, _ driver.TxOptions) (driver.Tx, error) {
+	_, err := c.ExecContext(ctx, "BEGIN", nil)
 	if err != nil {
 		return tx{nil}, err
 	}
-
 	return tx{c}, nil
 }
 

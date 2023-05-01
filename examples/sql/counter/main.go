@@ -79,6 +79,20 @@ func runCounterExample(dbPath string) {
 	// incCounterStatementNamedArgs3 := "INSERT INTO counter(country, city, value) VALUES($country, $city, 1) ON CONFLICT DO UPDATE SET value = IFNULL(value, 0) + 1 WHERE country = $country AND city = $city"
 	// exec(db, incCounterStatementNamedArgs3, sql.Named("country", "PL"), sql.Named("city", "WAW"))
 	// exec(db, incCounterStatementNamedArgs3, sql.Named("country", "FI"), sql.Named("city", "HEL"))
+
+	// try prepared statements
+	stmt, err := db.PrepareContext(ctx, incCounterStatementPositionalArgs)
+	defer stmt.Close()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to prepare statement %s: %s", incCounterStatementPositionalArgs, err)
+		os.Exit(1)
+	}
+	_, err = stmt.ExecContext(ctx, "PL", "WAW", "PL", "WAW")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to execute statement %s: %s", incCounterStatementPositionalArgs, err)
+		os.Exit(1)
+	}
+
 	rows := query(ctx, db, "SELECT * FROM counter")
 	for rows.Next() {
 		var row struct {
@@ -96,7 +110,7 @@ func runCounterExample(dbPath string) {
 		fmt.Fprintf(os.Stderr, "errors from query: %s", err)
 		os.Exit(1)
 	}
-	tx, err := db.Begin()
+	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to start a transaction: %s", err)
 		os.Exit(1)
