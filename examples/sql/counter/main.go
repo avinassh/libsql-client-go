@@ -81,13 +81,13 @@ func runCounterExample(dbPath string) {
 	// exec(db, incCounterStatementNamedArgs3, sql.Named("country", "FI"), sql.Named("city", "HEL"))
 
 	// try prepared statements
-	stmt, err := db.PrepareContext(ctx, incCounterStatementPositionalArgs)
+	stmt, err := db.Prepare("UPDATE counter SET value = value + 1 WHERE country = ? AND city = ?")
 	defer stmt.Close()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to prepare statement %s: %s", incCounterStatementPositionalArgs, err)
 		os.Exit(1)
 	}
-	_, err = stmt.ExecContext(ctx, "PL", "WAW", "PL", "WAW")
+	_, err = stmt.Exec("PL", "WAW")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to execute statement %s: %s", incCounterStatementPositionalArgs, err)
 		os.Exit(1)
