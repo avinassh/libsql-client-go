@@ -86,11 +86,11 @@ func convertToNamed(args []driver.Value) []driver.NamedValue {
 }
 
 func (s stmt) Exec(args []driver.Value) (driver.Result, error) {
-	panic("implement me")
+	return s.ExecContext(context.Background(), convertToNamed(args))
 }
 
 func (s stmt) Query(args []driver.Value) (driver.Rows, error) {
-	panic("implement me")
+	return s.QueryContext(context.Background(), convertToNamed(args))
 }
 
 func (s stmt) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
@@ -102,7 +102,7 @@ func (s stmt) QueryContext(ctx context.Context, args []driver.NamedValue) (drive
 }
 
 func (c *conn) Prepare(query string) (driver.Stmt, error) {
-	panic("implement me")
+	return c.PrepareContext(context.Background(), query)
 }
 
 func (c *conn) PrepareContext(_ context.Context, query string) (driver.Stmt, error) {
@@ -134,7 +134,7 @@ func (t tx) Rollback() error {
 }
 
 func (c *conn) Begin() (driver.Tx, error) {
-	panic("implement me")
+	return c.BeginTx(context.Background(), driver.TxOptions{})
 }
 
 func (c *conn) BeginTx(ctx context.Context, _ driver.TxOptions) (driver.Tx, error) {
